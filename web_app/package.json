@@ -1,0 +1,55 @@
+{
+  "name": "timeacdemey",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.5.0",
+    "@testing-library/user-event": "^7.2.1",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "react-scripts": "3.4.4",
+    "@fortawesome/fontawesome-svg-core": "^1.2.32",
+    "@fortawesome/free-solid-svg-icons": "^5.15.1",
+    "@fortawesome/react-fontawesome": "^0.1.11",
+    "lodash": "4.16.4",
+    "material-ui": "1.0.0-alpha.15",
+    "material-ui-icons": "1.0.0-alpha.3",
+    "minimist": "1.2.0",
+    "prop-types": "15.5.8",
+    "rc-time-picker": "^3.7.3",
+    "react-children-utilities": "^2.1.6",
+    "react-flexbox-grid": "^2.1.2",
+    "react-modern-calendar-datepicker": "^3.1.6",
+    "react-redux": "^5.0.6",
+    "react-router": "3.2.0",
+    "react-router-scroll": "0.4.4",
+    "react-tabs": "^3.1.1",
+    "react-time-picker": "^4.0.1",
+    "react-weekday-picker": "^1.0.8",
+    "redux": "3.6.0",
+    "redux-saga": "0.12.0",
+    "reselect": "2.5.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

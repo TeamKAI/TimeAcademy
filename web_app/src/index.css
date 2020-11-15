@@ -1,0 +1,39 @@
+body {
+    margin: 0;
+    font-family: Nunito,sans-serif;
+    font-size: .9rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #838f9c;
+    text-align: left;
+    background-color: #fafbfe;
+}
+
+/* Navbar */
+.nav {
+    height: 48px !important;
+    background-color: white !important;
+    box-shadow: 0 .125rem .25rem rgba(0,0,0,.075)!important;
+}
+
+.main > .nav {
+    z-index: 1;
+}
+
+ul.react-tabs__tab-list .list-group-item {
+    border: 0px;
+}
+
+/*Tabs */
+div[role=tabpanel] {
+        display: none;
+}
+
+.react-tabs__tab {
+    cursor: pointer;
+}
+
+.react-tabs__tab-panel--selected {
+        display: flex !important;
+        flex-direction: column;
+}
