@@ -1,0 +1,274 @@
+<html>
+
+<head>
+
+  <!-- To run Gun Locally, use: -->
+  <!-- npx gun-cli --host 127.0.0.1 -->
+
+  <!-- This is required for GUN.js to run in the browser -->
+  <script src="https://cdn.jsdelivr.net/npm/gun/gun.js"></script>
+
+  <script>
+    // This instantiates the Gun.js Library and connect to your local server
+    const gun = Gun({
+      peers: ['http://c9ef8d1e2c3d.ngrok.io/gun']
+    })
+
+    var user;
+
+    // Add "User"
+    function addUser(name, experienceKia, kiaPos, kiaNeg, kiaBal) {
+
+      var UUID = uuidv4();
+
+      gun.get('users').get(UUID).put({
+          "Name": name,
+          "ExperienceKia": experienceKia,
+          "KiaPos": kiaPos,
+          "KiaNeg": kiaNeg,
+          "KiaBal": kiaBal,
+          "NFTz": {
+
+          }
+        },
+        function(ack) {
+          console.log(ack.ok);
+        });
+
+      user = UUID;
+
+    }
+
+    function upgradeUserToExpert(UUID, domainExpert) {
+
+      gun.get('users').get(UUID).put({
+          "DomainExpert": {},
+          "Courses": {}
+        },
+        function(ack) {
+          console.log(ack.ok);
+        });
+    }
+
+    function updateObject(UUID, target, value) {
+
+      var newObject = {
+        [target]: value
+      };
+
+      gun.get('users').get(UUID).put(newObject,
+        function(ack) {
+          console.log(ack.ok);
+        });
+    }
+
+    function readObject(UUID, objectKey) {
+      var x;
+      gun.get('users').get(UUID).on(function(data, key) {
+        x = data;
+      })
+      return x[objectKey];
+    }
+
+
+    function spendKia(fromUUID, ammount) {
+      var newKiaPos = readObject(fromUUID, "KiaPos");
+      var newKiaNeg = readObject(fromUUID, "KiaNeg");
+      var newKiaBal = readObject(fromUUID, "KiaBal");
+      console.log("Bal:",newKiaBal, newKiaPos,"+ve", newKiaNeg,"-ve");
+
+      var output;
+
+      var spend = balanceStateChecker(fromUUID,ammount);
+      // var spend = true;
+
+      if(spend==="err"){
+        console.log("error");
+      }
+
+      // console.log(spend);
+
+      if(spend==true){
+        //spend -ve tokens
+        //update new balances
+        gun.get('users').get(fromUUID).put({
+            // "KiaPos": newKiaPos,
+            "KiaNeg": (newKiaNeg+ammount),
+            "KiaBal": (newKiaBal+ammount)
+          },
+          function(ack) {
+          });
+          output = "Negative Kai";
+
+      }else {
+        //spend +ve tokens
+        //update new balances
+        gun.get('users').get(fromUUID).put({
+            "KiaPos": (newKiaPos-ammount),
+            // "KiaNeg": newKiaNeg,
+            "KiaBal": (newKiaBal-ammount)
+          },
+          function(ack) {
+          });
+          output = "Positive Kai";
+      }
+
+      var newKiaPos = readObject(fromUUID, "KiaPos");
+      var newKiaNeg = readObject(fromUUID, "KiaNeg");
+      var newKiaBal = readObject(fromUUID, "KiaBal");
+      console.log();
+
+      var node = document.createElement("LI");
+      var textnode = document.createTextNode("Spent: " + ammount + " " + output + ", "+ "Bal: "+ newKiaBal + ", +ve: " + newKiaPos + ", -ve: " + newKiaNeg);
+      node.appendChild(textnode);
+      document.getElementById("log").appendChild(node);
+
+      //calculate new balances
+      // newKiaPos
+      // newKiaNeg
+      // newKiaBal
+
+      // update the course asset
+      // gun.get('asset').get(toUAID).put({
+      //     // Something...
+      //
+      //     // "KiaBal": kiaBal
+      //   },
+      //   function(ack) {
+      //     console.log(ack.ok);
+      //   });
+
+    }
+
+    function mintKia(toUUID, ammount) {
+      var newKiaPos = readObject(toUUID, "KiaPos");
+      var newKiaNeg = readObject(toUUID, "KiaNeg");
+      var newKiaBal = readObject(toUUID, "KiaBal");
+      console.log(newKiaPos,newKiaNeg,newKiaBal);
+
+      var mint = balanceStateChecker(toUUID,ammount);
+
+      if(mint==="err"){
+        console.log("error");
+      }
+
+      if(mint==true){
+        //mint -ve tokens
+        //update new balances
+        gun.get('users').get(toUUID).put({
+            // "KiaPos": newKiaPos,
+            "KiaNeg": (newKiaNeg+ammount),
+            "KiaBal": (newKiaBal+ammount)
+          },
+          function(ack) {
+            // console.log(ack.ok);
+            console.log("minted", ammount, "Negative Kai");
+          });
+      }else {
+        //mint +ve tokens
+        //update new balances
+        gun.get('users').get(toUUID).put({
+            "KiaPos": (newKiaPos+ammount),
+            // "KiaNeg": newKiaNeg,
+            "KiaBal": (newKiaBal+ammount)
+          },
+          function(ack) {
+            // console.log(ack.ok);
+            console.log("minted", ammount, "Positive Kai");
+
+          });
+      }
+
+      //calculate new balances
+      // newKiaPos
+      // newKiaNeg
+      // newKiaBal
+
+      // update the course asset
+      // gun.get('asset').get(toUUID).put({
+      //     // Something...
+      //
+      //     // "KiaBal": kiaBal
+      //   },
+      //   function(ack) {
+      //     console.log(ack.ok);
+      //   });
+
+    }
+
+
+
+
+    // These are
+    // Utilities
+    // Functions
+
+    // UUID Function
+    function uuidv4() {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = Math.random() * 16 | 0,
+          v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
+    }
+
+    function balanceStateChecker(fromUUID,ammount) {
+
+      // balance checker
+      var spendState;
+
+      // check kai balance, if > 50, spend neg, else < 50 spend pos
+      var b = readObject(fromUUID, "KiaBal");
+      var balance = parseInt(b);
+
+      // calculate if were spending positive or negative
+      if (balance > 0.1) {
+        // set spend positive tokens
+          spendState = false;
+      } else {
+        // set spend negative tokens
+          spendState = true;
+      }
+      return spendState;
+    }
+
+    function exampleSpendKia() {
+      var cost = Math.floor(Math.random() * 10)+1;
+      // console.log("button");
+      // console.log(cost);
+      spendKia(user,cost);
+    }
+    // function exampleMintKia() {
+    //   var cost = Math.floor(Math.random() * 10)+1;
+    //   // console.log("button");
+    //   // console.log(cost);
+    //   mintKia(user,cost);
+    // }
+
+    function startUp(){
+      addUser("Example User",100,10,0,10);
+    }
+
+    // startUp();
+  </script>
+</head>
+
+<body>
+  <!-- <div>Balance: <span id="balance"></span></div>
+  <div>Negative Kai: <span id="negKai"></span></div>
+  <div>Positive Kai: <span id="posKai"></span></div>
+  <div>Next Spend Kai: <span id="nextSpend"></span></div> -->
+
+  <button onclick="startUp()">CreateUser</button>
+  <button onclick="exampleSpendKia()">Spend Kai</button>
+  <p>Step1: Click "Create User", Step 2: Click "Spend Kia" button to simulate spending +ve and -ve Kia! </p>
+  <p>This is a simulator of how we intend Kia to work however we've not managed to work out the spending bug :) </p>
+  <ul id="log">
+  </ul>
+
+  <!-- <button onclick="exampleMintKia()">Mint Kia</button> -->
+
+
+</body>
+
+</html>
