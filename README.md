@@ -10,7 +10,7 @@ Odyssey Momentum 2020 repository for Time Academy
 -- npm start
 
 - A simulator ( Kia.html ) to demonstrate how we intend the Kia token system to work.
--- Our simulator isn't working completely perfectly, we intend that you spend 100% of 
+-- Our simulator isn't working completely perfectly, we intend that you spend 100% of -ve and +ve tokens and not have balances while spending the opposing form of Kia :) 
 
 -- To run the simulator:
 --- Open Kia.html in any browser and it should work.
